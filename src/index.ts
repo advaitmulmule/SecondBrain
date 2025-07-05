@@ -1,29 +1,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import User from './model/user';
+import userrouter from './routes/user'; 
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.post('/api/v1/signup', async (req,res) => {
-    const {username, password}= req.body;
-    await User.create({username, password});
-    res.status(201).json({message: "User created successfully"});
-});
-
-app.post('/api/v1/signin', async (req,res) => {
-    const {username, password} = req.body;
-    const user= await User.findOne({username});
-    if (!user || user.password !== password) {
-        res.status(401).json({message: "Invalid credentials"});
-    }else{
-        res.status(200).json({message: "Signin successful", userId: user._id});
-    }
-    
-});
+app.use(express.urlencoded({ extended: false }));
+app.use('/api/v1/user', userrouter);
 
 app.post('/api/v1/content', (req, res) => {
 
